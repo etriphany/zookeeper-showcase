@@ -1,0 +1,37 @@
+version: '3.6'
+
+# Based on https://github.com/simplesteph/kafka-stack-docker-compose
+
+services:
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    volumes:
+      - .data/zookeeper/data:/data
+      - .data/zookeeper/datalog:/datalog
+
+  # https://github.com/elkozmon/zoonavigator-api
+  zookeeper-api:
+    image: elkozmon/zoonavigator-api:0.5.1
+    container_name: zookeeper-api
+    environment:
+      SERVER_HTTP_PORT: 9090
+    depends_on:
+      - zookeeper
+
+  # https://github.com/elkozmon/zoonavigator-web
+  zookeeper-web:
+    image: elkozmon/zoonavigator-web:0.5.1
+    container_name: zookeeper-web
+    ports:
+      - "8080:8000"
+    environment:
+      API_HOST: "zookeeper-api"
+      API_PORT: 9090
+    depends_on:
+      - zookeeper-api

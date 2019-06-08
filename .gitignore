@@ -1,0 +1,9 @@
+# IDE
+*.iml
+.idea/
+
+# Target dirs
+target/
+
+# Container data
+.data
